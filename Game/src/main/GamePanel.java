@@ -1,6 +1,7 @@
-package Main;
+package main;
 
-import Entity.Player;
+import entity.Player;
+import tile.TileManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,17 +13,24 @@ public class GamePanel extends JPanel implements Runnable {
     final int scale = 3;
 
     public final int tileSize = originalTileSize * scale;
-    final int maxScreenColumn = 15;
-    final int maxScreenRow = 10;
-    final int screenWidth = tileSize * maxScreenColumn;
-    final int screenHeight = tileSize * maxScreenRow;
+    public final int maxScreenColumn = 16;
+    public final int maxScreenRow = 12;
+    public final int screenWidth = tileSize * maxScreenColumn;
+    public final int screenHeight = tileSize * maxScreenRow;
 
+    //WORLD SETTINGS
+    public final int maxWorldCol = 50;
+    public final int maxWorldRow = 50;
+    public final int worldWidth = tileSize * maxWorldCol;
+    public final int worldHeight = tileSize * maxWorldRow;
     //FPS
     int FPS = 60;
 
+    TileManager tileM = new TileManager(this);
     KeyHandler keyH = new KeyHandler();
     Thread gameThread;
-    Player player = new Player(this,keyH);
+    public CollisionCheck colChecker = new CollisionCheck(this);
+    public Player player = new Player(this,keyH);
 
     //Creates panel for the game: sits on window in main
     public GamePanel() {
@@ -33,11 +41,13 @@ public class GamePanel extends JPanel implements Runnable {
         this.setFocusable(true);
     }
 
+    // Game Thread
     public void startGameThread(){
         gameThread = new Thread(this);
         gameThread.start();
     }
 
+    // Call to update and repaint using fps
     @Override
     public void run() {
         double drawInterval = 1000000000d/FPS;
@@ -74,6 +84,7 @@ public class GamePanel extends JPanel implements Runnable {
     public void paintComponent(Graphics g){
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D)g;
+        tileM.draw(g2);
         player.draw(g2);
         g2.dispose();
     }

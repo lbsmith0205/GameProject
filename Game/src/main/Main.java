@@ -1,4 +1,4 @@
-package Main;
+package main;
 
 import javax.swing.*;
 
@@ -7,7 +7,7 @@ public class Main {
         JFrame window = new JFrame();
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setResizable(false);
-        window.setTitle("Self Project");
+        window.setTitle("Game Project");
 
         GamePanel gamePanel = new GamePanel();
         window.add(gamePanel);
