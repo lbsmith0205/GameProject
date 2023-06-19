@@ -17,6 +17,8 @@ public class Player extends Entity {
     public final int screenX;
     public final int screenY;
 
+    int hasKey = 0;
+
     public Player(GamePanel gp, KeyHandler keyH) {
         this.gp = gp;
         this.keyH = keyH;
@@ -26,6 +28,8 @@ public class Player extends Entity {
         screenY = gp.screenHeight/2 - (gp.tileSize/2);
 
         solidArea = new Rectangle(8, 16, 32,32);
+        solidAreaDefaultX = solidArea.x;
+        solidAreaDefaultY = solidArea.y;
 
         setDefaultValues();
         getPlayerImage();
@@ -72,6 +76,10 @@ public class Player extends Entity {
             collisionOn = false;
             gp.colChecker.checkTile(this);
 
+            // Check Object Collision
+            int objIndex = gp.colChecker.checkObject(this, true);
+            pickUpObject(objIndex);
+
             // If collision is false, player can move
             if(!collisionOn) {
 
@@ -94,7 +102,25 @@ public class Player extends Entity {
         }
     }
 
+    public void pickUpObject(int i) {
+        if(i != 999){
+            String objectName = gp.obj[i].name;
 
+            switch (objectName) {
+                case "Key" -> {
+                    hasKey++;
+                    gp.obj[i] = null;
+                }
+                case "Door" -> {
+                    if (hasKey > 0) {
+                        gp.obj[i] = null;
+                        hasKey--;
+                    }
+                }
+            }
+
+        }
+    }
 
     // Draw function for player image depending on direction and sprite number
     public void draw(Graphics2D g2) {
