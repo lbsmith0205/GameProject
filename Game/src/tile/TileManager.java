@@ -1,9 +1,11 @@
 package tile;
 
 import main.GamePanel;
+import main.UtilityTool;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,34 +25,31 @@ public class TileManager {
         getTileImage();
         loadMap("/Maps/world1.txt");
     }
+
     // give said tile an image depending on type
         public void getTileImage() {
-        try{
-            tile[0] = new Tile();
-            tile[0].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Terrain/grass_tile.png")));
+            setup(0, "grass", false);
+            setup(1, "brick", true);
+            setup(2, "water", true);
+            setup(3, "dirt", false);
+            setup(4, "tree", true);
+            setup(5, "sand", false);
 
-            tile[1] = new Tile();
-            tile[1].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Terrain/brick_tile.png")));
-            tile[1].collision = true;
+    }
 
-            tile[2] = new Tile();
-            tile[2].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Terrain/water_tile.png")));
-            tile[2].collision = true;
+    public void setup(int index, String imageName, boolean collision) {
+        UtilityTool uTool = new UtilityTool();
 
-            tile[3] = new Tile();
-            tile[3].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Terrain/dirt_tile.png")));
+        try {
+            tile[index] = new Tile();
+            tile[index].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Terrain/" + imageName + ".png")));
+            tile[index].image = uTool.scaleImage(tile[index].image, gp.tileSize, gp.tileSize);
+            tile[index].collision = collision;
 
-            tile[4] = new Tile();
-            tile[4].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Terrain/tree_tile.png")));
-            tile[4].collision = true;
-
-            tile[5] = new Tile();
-            tile[5].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Terrain/sand_tile.png")));
-
-        }catch (IOException e) {
+        }catch(IOException e) {
             e.printStackTrace();
-
         }
+
     }
     // reads in map for drawing
     public void loadMap(String filePath) {
@@ -100,7 +99,7 @@ public class TileManager {
                     worldY + gp.tileSize > gp.player.worldY - gp.player.screenY &&
                     worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
 
-                g2.drawImage(tile[tileNum].image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+                g2.drawImage(tile[tileNum].image, screenX, screenY,null);
             }
             worldCol++;
 
